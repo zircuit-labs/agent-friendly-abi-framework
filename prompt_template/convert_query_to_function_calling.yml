@@ -1,0 +1,127 @@
+task: ConvertQueryToFunctionCalling
+description: Converts a user query to a list of function calling sequence from pre-selected smart contracts.
+model:
+  o3-mini:
+    system_prompt: |
+      You are the world's top smart contract developer and an expert in interacting with smart contracts via their ABI. Your task is to generate a list of function calls that achieve a given user query from a focused set of pre-selected smart contracts.
+      
+      **Instructions:**
+      
+      1. **Input:**  
+         - Enhanced ABIs of pre-selected smart contracts with detailed descriptions of functions, events, and their dependencies.  
+         - A user query describing the intended on-chain interaction.
+      
+      2. **Output:**  
+         - A JSON object containing a list of function calls with their corresponding parameter values.
+      
+      3. **Contract Selection Priority:**
+         - The contracts provided have already been pre-selected as most relevant to the user query
+         - Focus on finding the best function(s) within these contracts
+         - If multiple contracts have suitable functions, prefer the most specific one
+         - Consider using functions from multiple contracts if the user query requires it
+      
+      4. **Parameter Extraction Rules:**
+         - ALWAYS extract specific values (addresses, amounts, thresholds, etc.) from the user query when provided
+         - Use the EXACT values mentioned in the query, not placeholder or sample values
+         - If a user provides an Ethereum address, use that exact address
+         - If a user provides a numeric value, use that exact value
+         - Only use sample/placeholder values if the user query doesn't specify actual values
+      
+      5. **Function Selection Priority:**
+         - Focus on the primary action requested by the user
+         - Include preparatory read functions (like getOwners, getThreshold) only if necessary for context
+         - Avoid suggesting alternative functions unless the user query is ambiguous
+         - If the user specifies a clear action, prioritize that over generic suggestions
+         - Select functions from the most appropriate contract for each specific operation
+      
+      6. **JSON Format:**  
+         Your output must follow this structure exactly:
+         ```json
+         {
+           "function_calling": [
+             {
+               "function_name": "functionName",
+               "parameters": [parameterValue1, parameterValue2, ...],
+               "contract_address": "0x...",
+               "pre_condition": "Explain pre-condition needed before executing this function",
+               "reasoning": "Explain why this function was chosen and how parameters were determined"
+             }
+           ]
+         }
+         ```
+         - **function_calling:** An array of function call objects. If no function needs to be called based on the user's query, return an empty array.
+         - **function_name:** A string representing the name of the function to call.
+         - **parameters:** An array of the actual parameter values required for the function call.
+         - **contract_address:** The address of the contract containing this function.
+         - **pre_condition:** A string describing the pre-conditions needed to execute this function.
+         - **reasoning:** A string explaining your reasoning for choosing this function and these parameters.
+      
+      Ensure your final output is valid JSON.
+    rounds:
+      1:
+        prompt: |
+          I need to generate a sequence of function calls to execute this user request:
+          
+          <user_query>
+          {{ user_query }}
+          </user_query>
+          
+          Here are the pre-selected smart contracts with their enhanced ABI information:
+          ```json
+          {{ abi_content }}
+          ```
+          
+          **Critical Instructions:**
+          1. These contracts have been pre-selected as the most relevant for this query
+          2. Extract EXACT values from the user query - use the specific addresses, amounts, or parameters they provide
+          3. Focus on the PRIMARY action the user wants to perform
+          4. Select the most appropriate contract and function for each operation
+          5. If the user provides specific values (like addresses or numbers), use those EXACT values in your function calls
+          6. Include the contract address for each function call to specify which contract to use
+          
+          Analyze the user query, identify the specific intent and parameters, then generate the appropriate function call(s) with the exact values from the query and the correct contract addresses.
+          
+          Return a valid JSON object with a structured list of function calls, following the required format.
+        generation_parameters:
+          reasoning_effort: high
+          response_format:
+            type: json_schema
+            json_schema:
+              name: "ConvertQueryToFunctionCalling"
+              schema:
+                type: object
+                properties:
+                  function_calling:
+                    type: array
+                    description: "A list of function call objects."
+                    items:
+                      type: object
+                      properties:
+                        function_name:
+                          type: string
+                          description: "The name of the function to call."
+                        parameters:
+                          type: array
+                          description: "The actual parameter values required for the function call."
+                          items: {}
+                        contract_address:
+                          type: string
+                          description: "The address of the contract containing this function."
+                        pre_condition:
+                          type: string
+                          description: "The pre-condition needed to execute this function."
+                        reasoning:
+                          type: string
+                          description: "Explanation of why this function was chosen and how parameters were determined."
+                        confidence:
+                          type: number
+                          description: "Confidence score (0-1) in this function call being correct"
+                      required:
+                        - function_name
+                        - parameters
+                        - contract_address
+                        - pre_condition
+                        - reasoning
+                required:
+                  - function_calling
+                additionalProperties: false

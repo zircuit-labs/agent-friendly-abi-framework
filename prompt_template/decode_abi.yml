@@ -1,0 +1,139 @@
+task: DecodeABI
+description: Decodes smart contract ABIs and generates LLM-friendly enhanced descriptions.
+model:
+  o3-mini:
+    rounds:
+      1:
+        prompt: |
+          You are an expert in Ethereum smart contracts. Analyze the provided smart contract source code and enhance the ABI functions with detailed, LLM-friendly descriptions.
+          
+          Your task is to:
+          1. Analyze the contract code and the ABI functions carefully
+          2. Generate detailed, clear descriptions for each function explaining what it does
+          3. Document each parameter with a clear description of what it represents and how it's used
+          4. Provide practical example usage showing parameter values for each function
+          5. Assess the security implications of each function (low, medium, high)
+          6. Identify related functions that are commonly used together
+          
+          For parameters that are addresses, include information about common tokens if relevant.
+          For amount parameters, include information about how decimals work (e.g., 18 decimals for most tokens, 6 for USDC).
+          
+          Return a **flattened** JSON object where each function name is a top-level key:
+          ```
+          {
+            "functionName1": {
+              "name": "functionName1",
+              "description": "Comprehensive description of what this function does",
+              "parameters": [
+                {
+                  "name": "paramName",
+                  "type": "paramType",
+                  "description": "Clear description of this parameter and how it's used"
+                }
+              ],
+              "security_level": "low|medium|high",
+              "related_functions": ["otherFunction1", "otherFunction2"],
+              "example_usage": "functionName1(exampleValue1, exampleValue2) // With comments explaining values"
+            },
+            "functionName2": {
+              ...
+            }
+          }
+          ```
+          
+          # Contract Source Code
+          ```solidity
+          {contract_source}
+          ```
+          
+          # ABI Functions
+          ```json
+          {functions}
+          ```
+          
+          # ABI Events
+          ```json
+          {events}
+          ```
+        generation_parameters:
+          reasoning_effort: high
+
+      2:
+        prompt: |
+          Analyze the provided smart contract ABI functions to generate a detailed dependency graph in JSON format.
+          
+          Each function may depend on or relate to other functions in these ways:
+          
+          1. Input dependencies: When a function requires the output of another function
+          2. State dependencies: When a function must be called before another to set up state
+          3. Permission dependencies: When a function requires authorization that another function provides 
+          4. Common patterns: Standard sequences like approve() before transferFrom() in ERC20
+          
+          For each function, identify all dependencies and explain their relationships clearly.
+          
+          Return a JSON object mapping function names to their dependencies:
+          ```
+          {
+            "functionName": [
+              {
+                "function": "dependentFunctionName",
+                "reason": "Clear explanation of why this dependency exists",
+                "required": true/false (whether it's absolutely required or just recommended)
+              }
+            ]
+          }
+          ```
+          
+          # ABI Functions
+          ```json
+          {abi_functions}
+          ```
+          
+          # ABI Events
+          ```json
+          {abi_events}
+          ```
+        generation_parameters:
+          reasoning_effort: high
+
+      3:
+        prompt: |
+          You are an expert in Ethereum smart contracts and ABI interpretation. Analyze the following smart contract ABI and generate a comprehensive function calling structure.
+          
+          Create a JSON object that defines function calling schemas for each function in the ABI with these properties:
+          
+          1. name: the function name
+          2. description: a brief description of what the function does
+          3. parameters: an array of parameter objects with:
+             - name: parameter name
+             - type: parameter type
+             - description: parameter purpose
+             - required: boolean indicating if it's required
+          4. returnType: what the function returns
+          5. dependencies: any functions that should be called before this one
+          6. example: a code example showing how to call this function
+          7. security_considerations: security notes or warnings
+          
+          Return ONLY a valid JSON object with no additional explanation.
+          
+          # ABI Information
+          ```json
+          {abi_json}
+          ```
+          
+          # Parsed Functions
+          ```json
+          {parsed_functions}
+          ```
+          
+          # Parsed Events
+          ```json
+          {parsed_events}
+          ```
+          
+          # Function Dependencies
+          ```json
+          {dependencies}
+          ```
+        generation_parameters:
+          reasoning_effort: high

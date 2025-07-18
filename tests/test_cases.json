@@ -1,0 +1,583 @@
+[
+  {
+    "test_case_id": "ZRC_TC_001",
+    "description": "User wants to deposit a specific ERC20 token into the bridge.",
+    "natural_language_query": "I want to deposit 150 units of token 0xTokenToDeposit into the bridge contract 0xBridgeContractAddress001.",
+    "assumed_contract_id": "bridge_contract_001",
+    "assumed_contract_address": "0xBridgeContractAddress001",
+    "expected_rewritten_query": "Execute a deposit of 150 units of ERC20 token at address 0xTokenToDeposit into contract 0xBridgeContractAddress001.",
+    "ground_truth_function_calls": {
+      "function_calling": [
+        {
+          "function_name": "deposit",
+          "parameters": {
+            "token": "0xTokenToDeposit",
+            "amount": "150000000000000000000"
+          },
+          "value": "0",
+          "reasoning": "The user intends to deposit a specific ERC20 token. The 'deposit' function is appropriate. Assumes 18 decimals for 0xTokenToDeposit."
+        }
+      ]
+    }
+  },
+  {
+    "test_case_id": "ZRC_TC_002",
+    "description": "User wants to deposit native currency (ETH) into the bridge.",
+    "natural_language_query": "Let me add 1.5 ETH to the bridge contract 0xBridgeContractAddress001.",
+    "assumed_contract_id": "bridge_contract_001",
+    "assumed_contract_address": "0xBridgeContractAddress001",
+    "expected_rewritten_query": "Execute a native currency deposit of 1.5 ETH into contract 0xBridgeContractAddress001.",
+    "ground_truth_function_calls": {
+      "function_calling": [
+        {
+          "function_name": "depositNative",
+          "parameters": {},
+          "value": "1500000000000000000",
+          "reasoning": "The user wants to deposit native currency (ETH). 'depositNative' is the payable function for this."
+        }
+      ]
+    }
+  },
+  {
+    "test_case_id": "ZRC_TC_003",
+    "description": "User wants to authorize another user on the bridge contract.",
+    "natural_language_query": "Authorize user 0xUserToAuthorize for contract 0xBridgeContractAddress001.",
+    "assumed_contract_id": "bridge_contract_001",
+    "assumed_contract_address": "0xBridgeContractAddress001",
+    "expected_rewritten_query": "Set authorization status for user 0xUserToAuthorize to true on contract 0xBridgeContractAddress001.",
+    "ground_truth_function_calls": {
+      "function_calling": [
+        {
+          "function_name": "authorize",
+          "parameters": {
+            "user": "0xUserToAuthorize",
+            "value": true
+          },
+          "value": "0",
+          "reasoning": "The user intends to grant authorization. The 'authorize' function with value 'true' achieves this."
+        }
+      ]
+    }
+  },
+  {
+    "test_case_id": "ZRC_TC_004",
+    "description": "User wants to query the owner of the bridge contract.",
+    "natural_language_query": "What is the current ownership address for the bridge at 0xBridgeContractAddress001?",
+    "assumed_contract_id": "bridge_contract_001",
+    "assumed_contract_address": "0xBridgeContractAddress001",
+    "expected_rewritten_query": "Retrieve the owner address of contract 0xBridgeContractAddress001.",
+    "ground_truth_function_calls": {
+      "function_calling": [
+        {
+          "function_name": "owner",
+          "parameters": {},
+          "value": "0",
+          "is_read_only": true,
+          "reasoning": "User is asking for the owner. The 'owner' view function provides this information."
+        }
+      ]
+    }
+  },
+  {
+    "test_case_id": "ZRC_TC_005",
+    "description": "User wants to mint an NFT.",
+    "natural_language_query": "Create a new NFT and give it to wallet 0xWalletForNewNFT on the NFT contract 0xNFTContractAddress002.",
+    "assumed_contract_id": "nft_contract_002",
+    "assumed_contract_address": "0xNFTContractAddress002",
+    "expected_rewritten_query": "Execute minting of a new NFT to recipient 0xWalletForNewNFT on contract 0xNFTContractAddress002.",
+    "ground_truth_function_calls": {
+      "function_calling": [
+        {
+          "function_name": "mint",
+          "parameters": {
+            "receiver": "0xWalletForNewNFT"
+          },
+          "value": "0",
+          "reasoning": "User wants to mint an NFT for a specific address. The 'mint' function is appropriate. If mintFee is required, it should be included in 'value' or handled via a separate fee payment if designed that way."
+        }
+      ]
+    }
+  },
+  {
+    "test_case_id": "ZRC_TC_006",
+    "description": "User wants to transfer an NFT.",
+    "natural_language_query": "Transfer NFT ID 789 from 0xAlice to 0xBob using the NFT contract 0xNFTContractAddress002.",
+    "assumed_contract_id": "nft_contract_002",
+    "assumed_contract_address": "0xNFTContractAddress002",
+    "expected_rewritten_query": "Execute transfer of NFT with ID 789 from owner 0xAlice to recipient 0xBob via contract 0xNFTContractAddress002.",
+    "ground_truth_function_calls": {
+      "function_calling": [
+        {
+          "function_name": "safeTransferFrom",
+          "parameters": {
+            "from": "0xAlice",
+            "to": "0xBob",
+            "tokenId": 789
+          },
+          "value": "0",
+          "reasoning": "User wants to transfer a specific NFT. 'safeTransferFrom' is a common and safe method."
+        }
+      ]
+    }
+  },
+  {
+    "test_case_id": "ZRC_TC_007",
+    "description": "User wants to update the minting fee for an NFT collection.",
+    "natural_language_query": "Update the minting fee to 0.05 ETH for the NFT collection at 0xNFTContractAddress002.",
+    "assumed_contract_id": "nft_contract_002",
+    "assumed_contract_address": "0xNFTContractAddress002",
+    "expected_rewritten_query": "Set the mint fee to 50000000000000000 wei for NFT contract 0xNFTContractAddress002.",
+    "ground_truth_function_calls": {
+      "function_calling": [
+        {
+          "function_name": "updateMintFee",
+          "parameters": {
+            "_mintFee": "50000000000000000"
+          },
+          "value": "0",
+          "reasoning": "User wants to change the minting fee. 'updateMintFee' function is used."
+        }
+      ]
+    }
+  },
+  {
+    "test_case_id": "ZRC_TC_008",
+    "description": "User wants to transfer ERC20 tokens.",
+    "natural_language_query": "Send 250 MyToken from my wallet to 0xReceiverAddress using contract 0xMyTokenERC20Address003.",
+    "assumed_contract_id": "mytoken_erc20_003",
+    "assumed_contract_address": "0xMyTokenERC20Address003",
+    "expected_rewritten_query": "Transfer 250 MyToken (250000000000000000000 units based on 18 decimals) to 0xReceiverAddress using contract 0xMyTokenERC20Address003.",
+    "ground_truth_function_calls": {
+      "function_calling": [
+        {
+          "function_name": "transfer",
+          "parameters": {
+            "to": "0xReceiverAddress",
+            "value": "250000000000000000000"
+          },
+          "value": "0",
+          "reasoning": "User wants to transfer their own tokens. 'transfer' function is appropriate."
+        }
+      ]
+    }
+  },
+  {
+    "test_case_id": "ZRC_TC_009",
+    "description": "User wants to check their ERC20 token balance.",
+    "natural_language_query": "How many MyTokens do I have in contract 0xMyTokenERC20Address003?",
+    "assumed_contract_id": "mytoken_erc20_003",
+    "assumed_contract_address": "0xMyTokenERC20Address003",
+    "user_address_context": "0xUserSelfAddress",
+    "expected_rewritten_query": "Retrieve ERC20 token balance for my address (0xUserSelfAddress) from contract 0xMyTokenERC20Address003.",
+    "ground_truth_function_calls": {
+      "function_calling": [
+        {
+          "function_name": "balanceOf",
+          "parameters": {
+            "account": "0xUserSelfAddress"
+          },
+          "value": "0",
+          "is_read_only": true,
+          "reasoning": "User is asking for their own token balance. 'balanceOf' is used with the user's address."
+        }
+      ]
+    }
+  },
+  {
+    "test_case_id": "ZRC_TC_010",
+    "description": "Sequential operations: Approve and then TransferFrom for ERC20.",
+    "natural_language_query": "First, I want to approve 0xSpenderAddress to spend 1000 of MyToken from my account 0xMyAddress on contract 0xMyTokenERC20Address003. After that, 0xSpenderAddress should transfer 200 MyToken from 0xMyAddress to 0xFinalReceiver.",
+    "assumed_contract_id": "mytoken_erc20_003",
+    "assumed_contract_address": "0xMyTokenERC20Address003",
+    "expected_rewritten_query": "1. Approve 0xSpenderAddress for 1000 MyToken from 0xMyAddress. 2. Spender 0xSpenderAddress transfers 200 MyToken from 0xMyAddress to 0xFinalReceiver.",
+    "ground_truth_function_calls": {
+      "function_calling": [
+        {
+          "function_name": "approve",
+          "contract_address": "0xMyTokenERC20Address003",
+          "parameters": {
+            "spender": "0xSpenderAddress",
+            "value": "1000000000000000000000"
+          },
+          "value": "0",
+          "reasoning": "Step 1: Approve spender for a certain amount of tokens."
+        },
+        {
+          "function_name": "transferFrom",
+          "contract_address": "0xMyTokenERC20Address003",
+          "parameters": {
+            "from": "0xMyAddress",
+            "to": "0xFinalReceiver",
+            "value": "200000000000000000000"
+          },
+          "value": "0",
+          "reasoning": "Step 2: Spender executes transferFrom. The calling context for this would be 0xSpenderAddress."
+        }
+      ]
+    }
+  },
+  {
+    "test_case_id": "ZRC_TC_011",
+    "description": "User wants to query the list of owners for a Gnosis Safe.",
+    "natural_language_query": "Show me the list of owners for the safe at 0xSafeContractAddress004.",
+    "assumed_contract_id": "safe_contract_004",
+    "assumed_contract_address": "0xSafeContractAddress004",
+    "expected_rewritten_query": "Retrieve the list of owner addresses for the safe contract 0xSafeContractAddress004.",
+    "ground_truth_function_calls": {
+      "function_calling": [
+        {
+          "function_name": "getOwners",
+          "parameters": {},
+          "value": "0",
+          "is_read_only": true,
+          "reasoning": "User wants to see the list of owners. 'getOwners' view function provides this."
+        }
+      ]
+    }
+  },
+  {
+    "test_case_id": "ZRC_TC_012",
+    "description": "User wants to add an owner with a new threshold to a Gnosis Safe.",
+    "natural_language_query": "Add 0xNewOwner to the safe 0xSafeContractAddress004 and set the threshold to 2.",
+    "assumed_contract_id": "safe_contract_004",
+    "assumed_contract_address": "0xSafeContractAddress004",
+    "expected_rewritten_query": "Add owner 0xNewOwner to safe 0xSafeContractAddress004 and update the signature threshold to 2.",
+    "ground_truth_function_calls": {
+      "function_calling": [
+        {
+          "function_name": "addOwnerWithThreshold",
+          "parameters": {
+            "owner": "0xNewOwner",
+            "_threshold": 2
+          },
+          "value": "0",
+          "reasoning": "User wants to add an owner and set a new threshold. 'addOwnerWithThreshold' is the correct function."
+        }
+      ]
+    }
+  },
+  {
+    "test_case_id": "ZRC_TC_013",
+    "description": "User wants to execute a multicall for balanceOf and totalSupply.",
+    "natural_language_query": "For contract 0xMyTokenERC20Address003, get the balance of 0xAlice and also get its total supply, all in one go.",
+    "assumed_contract_id": "multicall_contract_005",
+    "assumed_contract_address": "0xMulticallContractAddress005",
+    "expected_rewritten_query": "Perform a multicall to contract 0xMulticallContractAddress005, targeting 0xMyTokenERC20Address003 for balanceOf(0xAlice) and totalSupply().",
+    "ground_truth_function_calls": {
+      "function_calling": [
+        {
+          "function_name": "aggregate",
+          "parameters": {
+            "calls": [
+              {
+                "target": "0xMyTokenERC20Address003",
+                "callData": "0x70a08231000000000000000000000000aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              {
+                "target": "0xMyTokenERC20Address003",
+                "callData": "0x18160ddd"
+              }
+            ]
+          },
+          "value": "0",
+          "reasoning": "User wants to batch read calls. 'aggregate' function in Multicall3 is used. Calldata needs to be pre-encoded."
+        }
+      ]
+    }
+  },
+  {
+    "test_case_id": "ZRC_TC_014",
+    "description": "User wants to swap ETH for an exact amount of tokens using UniswapV2Router.",
+    "natural_language_query": "I want to receive exactly 500 TokenB by spending ETH. TokenA is WETH at 0xWETHAddress and TokenB is at 0xTokenBAddress. Use router 0xUniswapV2RouterAddress006 and send tokens to 0xMyWallet by tomorrow.",
+    "assumed_contract_id": "uniswapv2_router_006",
+    "assumed_contract_address": "0xUniswapV2RouterAddress006",
+    "expected_rewritten_query": "Execute a swap on UniswapV2Router 0xUniswapV2RouterAddress006 to get exactly 500 TokenB (0xTokenBAddress) by sending ETH (via WETH 0xWETHAddress) to recipient 0xMyWallet, with deadline <timestamp_tomorrow>.",
+    "ground_truth_function_calls": {
+      "function_calling": [
+        {
+          "function_name": "swapETHForExactTokens",
+          "parameters": {
+            "amountOut": "500000000000000000000",
+            "path": ["0xWETHAddress", "0xTokenBAddress"],
+            "to": "0xMyWallet",
+            "deadline": "<LLM_GENERATED_TIMESTAMP_TOMORROW>"
+          },
+          "value": "<CALCULATED_ETH_VALUE>",
+          "reasoning": "User wants an exact amount of tokens for ETH. 'swapETHForExactTokens' is used. The 'value' sent must be sufficient."
+        }
+      ]
+    }
+  },
+  {
+    "test_case_id": "ZRC_TC_015",
+    "description": "User wants to add liquidity to a UniswapV2 pool.",
+    "natural_language_query": "Add liquidity with 100 TokenA (0xTokenAAddress) and 0.5 ETH to the pool on router 0xUniswapV2RouterAddress006. Send LP tokens to 0xMyWallet. Don't care about minimums, just do it before timestamp 1678886400.",
+    "assumed_contract_id": "uniswapv2_router_006",
+    "assumed_contract_address": "0xUniswapV2RouterAddress006",
+    "expected_rewritten_query": "Add liquidity to a TokenA/ETH pool using 100 TokenA (0xTokenAAddress) and 0.5 ETH, with recipient 0xMyWallet and deadline 1678886400, via UniswapV2Router 0xUniswapV2RouterAddress006.",
+    "ground_truth_function_calls": {
+      "function_calling": [
+        {
+          "function_name": "addLiquidityETH",
+          "parameters": {
+            "token": "0xTokenAAddress",
+            "amountTokenDesired": "100000000000000000000",
+            "amountTokenMin": "0",
+            "amountETHMin": "0",
+            "to": "0xMyWallet",
+            "deadline": 1678886400
+          },
+          "value": "500000000000000000",
+          "reasoning": "User wants to add liquidity with one ERC20 and ETH. 'addLiquidityETH' is appropriate."
+        }
+      ]
+    }
+  },
+  {
+    "test_case_id": "ZRC_TC_016",
+    "description": "User wants to permit a transfer using AllowanceTransfer contract (Permit2-like).",
+    "natural_language_query": "I want to permit 0xSpenderA to transfer 100 units of 0xTokenX from my account 0xOwnerA for the next 24 hours using contract 0xAllowanceTransferAddress007. The nonce should be 5.",
+    "assumed_contract_id": "allowance_transfer_007",
+    "assumed_contract_address": "0xAllowanceTransferAddress007",
+    "user_address_context": "0xOwnerA",
+    "expected_rewritten_query": "Generate a permit signature for owner 0xOwnerA allowing spender 0xSpenderA to transfer 100 units of token 0xTokenX with nonce 5, valid for 24 hours, then submit this permit to contract 0xAllowanceTransferAddress007.",
+    "ground_truth_function_calls": {
+      "function_calling": [
+        {
+          "function_name": "permit",
+          "parameters": {
+            "owner": "0xOwnerA",
+            "permitSingle": {
+              "details": {
+                "token": "0xTokenX",
+                "amount": "100000000000000000000",
+                "expiration": "<TIMESTAMP_NOW_PLUS_24_HOURS>",
+                "nonce": 5
+              },
+              "spender": "0xSpenderA",
+              "sigDeadline": "<TIMESTAMP_NOW_PLUS_24_HOURS_PLUS_GRACE_PERIOD>"
+            },
+            "signature": "<GENERATED_EIP712_SIGNATURE>"
+          },
+          "value": "0",
+          "reasoning": "User wants to authorize a spender via a permit. This involves signing an EIP712 message and submitting it via the 'permit' function."
+        }
+      ]
+    }
+  },
+  {
+    "test_case_id": "ZRC_TC_017",
+    "description": "User wants to transfer ownership of a contract.",
+    "natural_language_query": "Make 0xNewOwner the new owner of the bridge contract 0xBridgeContractAddress001.",
+    "assumed_contract_id": "bridge_contract_001",
+    "assumed_contract_address": "0xBridgeContractAddress001",
+    "expected_rewritten_query": "Transfer ownership of contract 0xBridgeContractAddress001 to 0xNewOwner.",
+    "ground_truth_function_calls": {
+      "function_calling": [
+        {
+          "function_name": "transferOwnership",
+          "parameters": {
+            "newOwner": "0xNewOwner"
+          },
+          "value": "0",
+          "reasoning": "User explicitly requests to change the owner of the contract."
+        }
+      ]
+    }
+  },
+  {
+    "test_case_id": "ZRC_TC_018",
+    "description": "Query involving string and boolean parameters for NFT initialization.",
+    "natural_language_query": "Initialize the NFT contract 0xNFTContractAddress002 with name 'My Zircuit NFT', symbol 'MZNFT', mint fee 0.1 ether, and token URI 'ipfs://cid/'.",
+    "assumed_contract_id": "nft_contract_002",
+    "assumed_contract_address": "0xNFTContractAddress002",
+    "expected_rewritten_query": "Execute initialization of NFT contract 0xNFTContractAddress002 with name 'My Zircuit NFT', symbol 'MZNFT', mint fee 100000000000000000 wei, and base token URI 'ipfs://cid/'.",
+    "ground_truth_function_calls": {
+      "function_calling": [
+        {
+          "function_name": "initialize",
+          "parameters": {
+            "_name": "My Zircuit NFT",
+            "_symbol": "MZNFT",
+            "_mintFee": "100000000000000000",
+            "_tokenURI": "ipfs://cid/"
+          },
+          "value": "0",
+          "reasoning": "User intends to initialize the NFT contract with specific metadata."
+        }
+      ]
+    }
+  },
+  {
+    "test_case_id": "ZRC_TC_019",
+    "description": "Multicall3 with aggregate3Value for payable calls.",
+    "natural_language_query": "Using multicall at 0xMulticallContractAddress005, call 'depositNative' on contract 0xBridgeContractAddress001 with 0.1 ETH, and then on the same contract, call 'addFundsNative' with 0.2 ETH. Allow failures.",
+    "assumed_contract_id": "multicall_contract_005",
+    "assumed_contract_address": "0xMulticallContractAddress005",
+    "expected_rewritten_query": "Execute a batch of payable calls using aggregate3Value: 1. Call depositNative() on 0xBridgeContractAddress001 with 0.1 ETH. 2. Call addFundsNative() on 0xBridgeContractAddress001 with 0.2 ETH. Allow individual calls to fail.",
+    "ground_truth_function_calls": {
+      "function_calling": [
+        {
+          "function_name": "aggregate3Value",
+          "parameters": {
+            "calls": [
+              {
+                "target": "0xBridgeContractAddress001",
+                "allowFailure": true,
+                "value": "100000000000000000",
+                "callData": "0xd0e30db0"
+              },
+              {
+                "target": "0xBridgeContractAddress001",
+                "allowFailure": true,
+                "value": "200000000000000000",
+                "callData": "0x039f046c"
+              }
+            ]
+          },
+          "value": "300000000000000000",
+          "reasoning": "User wants to batch multiple payable calls. 'aggregate3Value' is suitable, and the total msg.value for the multicall must sum the values of individual calls."
+        }
+      ]
+    }
+  },
+  {
+    "test_case_id": "ZRC_TC_020",
+    "description": "Using a function with a struct array input (`withdrawWithData` from Bridge contract).",
+    "natural_language_query": "Withdraw 100 units of token 0xTokenToWithdraw and 0.01 native ETH from bridge 0xBridgeContractAddress001, also perform calls: target 0xTarget1 value 0 data 0xCallData1, target 0xTarget2 value 10 wei data 0xCallData2. Reference is 0xRefBytes.",
+    "assumed_contract_id": "bridge_contract_001",
+    "assumed_contract_address": "0xBridgeContractAddress001",
+    "expected_rewritten_query": "Execute withdrawWithData on bridge 0xBridgeContractAddress001 for 100 0xTokenToWithdraw, 0.01 native ETH, with calls [(0xTarget1, 0, 0xCallData1), (0xTarget2, 10, 0xCallData2)] and reference 0xRefBytes.",
+    "ground_truth_function_calls": {
+      "function_calling": [
+        {
+          "function_name": "withdrawWithData",
+          "parameters": {
+            "token": "0xTokenToWithdraw",
+            "amount": "100000000000000000000",
+            "amountNative": "10000000000000000",
+            "datas": [
+              {
+                "target": "0xTarget1",
+                "value": "0",
+                "data": "0xCallData1"
+              },
+              {
+                "target": "0xTarget2",
+                "value": "10",
+                "data": "0xCallData2"
+              }
+            ],
+            "ref": "0xRefBytes"
+          },
+          "value": "0",
+          "reasoning": "User intends to withdraw tokens and native currency while executing multiple external calls. 'withdrawWithData' matches this, taking an array of call structs."
+        }
+      ]
+    }
+  },
+  {
+    "test_case_id": "ZRC_TC_021",
+    "description": "User wants to set an allowance for a specific token to a maximum amount.",
+    "natural_language_query": "Approve spender 0xSpenderAddress to use all of my MyToken tokens on contract 0xMyTokenERC20Address003.",
+    "assumed_contract_id": "mytoken_erc20_003",
+    "assumed_contract_address": "0xMyTokenERC20Address003",
+    "user_address_context": "0xUserSelfAddress",
+    "expected_rewritten_query": "Set ERC20 token approval for spender 0xSpenderAddress to the maximum possible amount for contract 0xMyTokenERC20Address003.",
+    "ground_truth_function_calls": {
+      "function_calling": [
+        {
+          "function_name": "approve",
+          "parameters": {
+            "spender": "0xSpenderAddress",
+            "value": "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+          },
+          "value": "0",
+          "reasoning": "User wants to approve maximum token amount. This is typically done by approving uint256 max value."
+        }
+      ]
+    }
+  },
+  {
+    "test_case_id": "ZRC_TC_022",
+    "description": "User wants to renounce ownership of a contract (explicitly for a contract that supports it directly).",
+    "natural_language_query": "I want to renounce ownership of the contract 0xNFTContractAddress002.",
+    "assumed_contract_id": "nft_contract_002",
+    "assumed_contract_address": "0xNFTContractAddress002",
+    "expected_rewritten_query": "Execute renounceOwnership for contract 0xNFTContractAddress002.",
+    "ground_truth_function_calls": {
+      "function_calling": [
+        {
+          "function_name": "renounceOwnership",
+          "parameters": {},
+          "value": "0",
+          "reasoning": "User explicitly requests to renounce ownership of the contract."
+        }
+      ]
+    }
+  },
+  {
+    "test_case_id": "ZRC_TC_023",
+    "description": "User wants to get the ETH balance of an address using Multicall.",
+    "natural_language_query": "Check the ETH balance for address 0xAddressToCheck using the multicall contract 0xMulticallContractAddress005.",
+    "assumed_contract_id": "multicall_contract_005",
+    "assumed_contract_address": "0xMulticallContractAddress005",
+    "expected_rewritten_query": "Using multicall contract 0xMulticallContractAddress005, get the ETH balance of 0xAddressToCheck.",
+    "ground_truth_function_calls": {
+      "function_calling": [
+        {
+          "function_name": "getEthBalance",
+          "parameters": {
+            "addr": "0xAddressToCheck"
+          },
+          "value": "0",
+          "is_read_only": true,
+          "reasoning": "User wants to get ETH balance. Multicall contract has a direct function 'getEthBalance'."
+        }
+      ]
+    }
+  },
+  {
+    "test_case_id": "ZRC_TC_024",
+    "description": "User wants to get the current block timestamp using Multicall.",
+    "natural_language_query": "What's the current block timestamp according to multicall 0xMulticallContractAddress005?",
+    "assumed_contract_id": "multicall_contract_005",
+    "assumed_contract_address": "0xMulticallContractAddress005",
+    "expected_rewritten_query": "Retrieve the current block timestamp using multicall contract 0xMulticallContractAddress005.",
+    "ground_truth_function_calls": {
+      "function_calling": [
+        {
+          "function_name": "getCurrentBlockTimestamp",
+          "parameters": {},
+          "value": "0",
+          "is_read_only": true,
+          "reasoning": "User is asking for the current block timestamp. Multicall contract provides 'getCurrentBlockTimestamp'."
+        }
+      ]
+    }
+  },
+  {
+    "test_case_id": "ZRC_TC_025",
+    "description": "User wants to swap exact tokens for ETH using UniswapV2Router.",
+    "natural_language_query": "Swap 200 TokenA (0xTokenAAddress) for ETH, ensuring I get at least 0.1 ETH. Use router 0xUniswapV2RouterAddress006, send ETH to 0xMyWallet, deadline in 1 hour.",
+    "assumed_contract_id": "uniswapv2_router_006",
+    "assumed_contract_address": "0xUniswapV2RouterAddress006",
+    "expected_rewritten_query": "Execute a swap on UniswapV2Router 0xUniswapV2RouterAddress006 to convert 200 TokenA (0xTokenAAddress) to ETH (via WETH 0xWETHAddress), ensuring a minimum of 0.1 ETH output to recipient 0xMyWallet, with a 1-hour deadline.",
+    "ground_truth_function_calls": {
+      "function_calling": [
+        {
+          "function_name": "swapExactTokensForETH",
+          "parameters": {
+            "amountIn": "200000000000000000000",
+            "amountOutMin": "100000000000000000",
+            "path": ["0xTokenAAddress", "0xWETHAddress"],
+            "to": "0xMyWallet",
+            "deadline": "<LLM_GENERATED_TIMESTAMP_1_HOUR_FROM_NOW>"
+          },
+          "value": "0",
+          "reasoning": "User wants to swap a fixed amount of tokens for a minimum amount of ETH."
+        }
+      ]
+    }
+  }
+] 

@@ -1,0 +1,120 @@
+task: SelectContracts
+description: Selects the most relevant smart contracts based on user query and simplified contract ABIs.
+model:
+  o3-mini:
+    system_prompt: |
+      You are an expert blockchain analyst specializing in smart contract selection. Your task is to analyze a user query and select the most relevant smart contracts from a collection of available contracts.
+
+      **Instructions:**
+
+      1. **Input:**
+         - A user query describing their intended blockchain interaction
+         - Simplified ABIs of available smart contracts with function summaries and categories
+
+      2. **Selection Criteria:**
+         - **Primary Match**: Functions that directly address the user's intent
+         - **Category Relevance**: Contract categories that align with the requested operation
+         - **Function Coverage**: Contracts with comprehensive function sets for the use case
+         - **Specificity**: Prefer contracts with specific functions over generic ones
+
+      3. **Output Requirements:**
+         - Select up to {{ max_contracts }} most relevant contracts
+         - Rank contracts by relevance (most relevant first)
+         - Provide clear reasoning for each selection
+         - Include confidence scores for each selection
+
+      4. **JSON Format:**
+         ```json
+         {
+           "selected_contracts": [
+             {
+               "contract_address": "address_or_id",
+               "relevance_score": 0.95,
+               "primary_functions": ["function1", "function2"],
+               "categories": ["category1", "category2"],
+               "reasoning": "Explanation of why this contract was selected"
+             }
+           ],
+           "analysis_summary": "Brief summary of the selection process"
+         }
+         ```
+
+      **Selection Guidelines:**
+      - If user wants to "add owner", prioritize multisig/governance contracts
+      - If user wants to "transfer tokens", prioritize ERC20/token contracts
+      - If user wants to "swap", prioritize DEX/swap contracts
+      - If user wants to "bridge", prioritize bridge contracts
+      - Consider function names, descriptions, and inferred categories
+      - Avoid contracts with no relevant functions
+
+    rounds:
+      1:
+        prompt: |
+          Please analyze this user query and select the most relevant smart contracts:
+
+          <user_query>
+          {{ user_query }}
+          </user_query>
+
+          Available contracts with simplified ABIs:
+          ```json
+          {{ simplified_abis }}
+          ```
+
+          **Analysis Instructions:**
+          1. Parse the user intent from the query
+          2. Examine each contract's functions and categories
+          3. Score contracts based on function relevance and category match
+          4. Select the top {{ max_contracts }} most relevant contracts
+          5. Provide detailed reasoning for your selections
+
+          Return a JSON object with your contract selections, ranked by relevance.
+
+        generation_parameters:
+          reasoning_effort: high
+          response_format:
+            type: json_schema
+            json_schema:
+              name: "SelectContracts"
+              schema:
+                type: object
+                properties:
+                  selected_contracts:
+                    type: array
+                    description: "List of selected contracts ranked by relevance"
+                    items:
+                      type: object
+                      properties:
+                        contract_address:
+                          type: string
+                          description: "Contract address or identifier"
+                        relevance_score:
+                          type: number
+                          description: "Relevance score between 0 and 1"
+                          minimum: 0
+                          maximum: 1
+                        primary_functions:
+                          type: array
+                          description: "Main functions that match the user query"
+                          items:
+                            type: string
+                        categories:
+                          type: array
+                          description: "Contract categories"
+                          items:
+                            type: string
+                        reasoning:
+                          type: string
+                          description: "Explanation for selecting this contract"
+                      required:
+                        - contract_address
+                        - relevance_score
+                        - primary_functions
+                        - reasoning
+                  analysis_summary:
+                    type: string
+                    description: "Brief summary of the selection process"
+                required:
+                  - selected_contracts
+                  - analysis_summary
+                additionalProperties: false 

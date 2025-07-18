@@ -1,0 +1,36 @@
+[tool.poetry]
+name = "zircuit-api-demo"
+version = "0.1.0"
+description = "AI-powered smart contract interaction agent for the Zircuit blockchain"
+authors = ["Zircuit labs"]
+license = "MIT"
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.12"
+pyyaml = "^6.0.2"
+openai = "^1.65.5"
+loguru = "^0.7.3"
+tiktoken = "^0.9.0"
+pytest = "^8.3.5"
+pytest-asyncio = "^0.25.3"
+watchfiles = "^1.0.4"
+more-itertools = "^10.6.0"
+jinja2 = "^3.1.6"
+seaborn = "^0.13.2"
+pandas = "^2.2.3"
+matplotlib = "^3.10.1"
+python-dotenv = "^1.0.0"
+fastapi = "^0.115.6"
+uvicorn = {extras = ["standard"], version = "^0.34.0"}
+pydantic = "^2.10.5"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.5"
+pytest-asyncio = "^0.25.3"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

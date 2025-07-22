@@ -309,7 +309,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - 🐛 **Issues**: Report bugs via GitHub Issues
 - 💬 **Discussions**: Join our community discussions on GitHub
-- 📧 **Contact**: Reach out to the team at dev@gud.dev
+- 📧 **Contact**: Reach out to the team at ai@zircuit.com
 
 
 ---
